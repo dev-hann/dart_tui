@@ -1,9 +1,14 @@
 import 'package:dart_tui/dart_tui.dart';
+import 'package:dart_tui/src/widget/center.dart';
+import 'package:dart_tui/src/widget/tui_app.dart';
 
-void main() {
+void main() async {
   runTui(
-    () => TuiWidget(),
+    () => TuiApp(
+      child: Center(
+        child: Text("Hello World!!"),
+      ),
+    ),
   );
+  await Future.delayed(Duration(minutes: 2));
 }
-
-class TuiWidget extends Widget {}
