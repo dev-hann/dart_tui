@@ -8,17 +8,9 @@ import 'package:dart_tui/src/widget/widget.dart';
 typedef WidgetBuilder = Widget Function();
 
 class Tui {
-  static printError(Object text) {
-    final file = File("/Users/secom/Documents/dart_tui/example/error.txt");
-    if (!file.existsSync()) {
-      file.createSync();
-    }
-    file.writeAsString("$text");
-  }
-
   static Stream get resizeWindowStrem => ProcessSignal.sigwinch.watch();
 
-  static init(
+  static runApp(
     WidgetBuilder initWidget,
   ) {
     resizeWindowStrem.listen((_) {

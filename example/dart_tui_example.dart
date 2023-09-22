@@ -4,7 +4,7 @@ import 'package:dart_tui/src/view/view.dart';
 import 'package:dart_tui/src/widget/widget.dart';
 
 void main() async {
-  Tui.init(
+  Tui.runApp(
     () => MainView(),
   );
 }
