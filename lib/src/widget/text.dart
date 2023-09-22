@@ -1,17 +1,21 @@
 import 'package:dart_tui/src/offset.dart';
 import 'package:dart_tui/src/pixel.dart';
-import 'package:dart_tui/src/render_object/render_object_widget.dart';
 import 'package:dart_tui/src/size.dart';
+import 'package:dart_tui/src/widget/widget.dart';
 
-class Text extends RenderObjectWidget {
+class Text extends Widget {
   Text(this.text);
   final String text;
 
   @override
-  List<Pixel> paint(Size size) {
+  List<Pixel> paint(Size parentSize) {
     final List<Pixel> pixelList = [];
-    for (int x = 0; x < text.length; x++) {
-      final pixel = Pixel(offset: Offset(x, 0), char: text[x]);
+    final len = text.length;
+    for (int index = 0; index < len; index++) {
+      final pixel = Pixel(
+        offset: Offset(index, 0),
+        char: text[index],
+      );
       pixelList.add(pixel);
     }
     return pixelList;

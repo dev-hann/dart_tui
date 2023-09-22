@@ -1,14 +1,38 @@
 import 'package:dart_tui/dart_tui.dart';
-import 'package:dart_tui/src/widget/center.dart';
-import 'package:dart_tui/src/widget/tui_app.dart';
+import 'package:dart_tui/src/size.dart';
+import 'package:dart_tui/src/view/view.dart';
+import 'package:dart_tui/src/widget/widget.dart';
 
 void main() async {
-  runTui(
-    () => TuiApp(
-      child: Center(
-        child: Text("Hello World!!"),
-      ),
-    ),
+  Tui.init(
+    () => MainView(),
   );
-  await Future.delayed(Duration(minutes: 2));
+}
+
+class MainView extends View {
+  String a = "Hello";
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration(seconds: 3)).then((value) {
+      a = "Hello World!!";
+      update();
+    });
+  }
+
+  @override
+  Widget build(Size parentSize) {
+    return Card(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(a),
+          Text(a),
+          Text(a),
+          Text(a),
+          Text(a),
+        ],
+      ),
+    );
+  }
 }

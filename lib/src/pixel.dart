@@ -6,7 +6,7 @@ import 'package:equatable/equatable.dart';
 import 'package:dart_tui/src/color.dart';
 import 'package:dart_tui/src/offset.dart';
 
-class Pixel extends Equatable implements Comparable<Pixel> {
+class Pixel extends Equatable {
   Pixel({
     required this.offset,
     required this.char,
@@ -25,15 +25,6 @@ class Pixel extends Equatable implements Comparable<Pixel> {
         foreground,
         background,
       ];
-
-  @override
-  int compareTo(Pixel other) {
-    final otherOffset = other.offset;
-    if (otherOffset.y != offset.y) {
-      return otherOffset.y.compareTo(offset.y);
-    }
-    return otherOffset.x.compareTo(offset.x);
-  }
 
   Pixel copyWith({
     Offset? offset,
