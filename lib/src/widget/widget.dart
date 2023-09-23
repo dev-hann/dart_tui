@@ -1,9 +1,15 @@
 import 'package:dart_tui/src/color.dart';
+import 'package:dart_tui/src/focus_node.dart';
 import 'package:dart_tui/src/offset.dart';
 import 'package:dart_tui/src/pixel.dart';
 import 'package:dart_tui/src/size.dart';
 
 abstract class Widget {
+  Widget({
+    this.focusNode,
+  });
+  final FocusNode? focusNode;
+
   Size layout(Size parentSize) {
     int minX = 0, maxX = 0;
     int minY = 0, maxY = 0;
@@ -46,12 +52,5 @@ abstract class Widget {
       pixelList.add(pixel);
     }
     return pixelList;
-  }
-}
-
-class EmptyWidget extends Widget {
-  @override
-  List<Pixel> paint(Size parentSize) {
-    return [];
   }
 }

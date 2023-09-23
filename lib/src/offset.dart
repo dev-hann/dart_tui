@@ -8,9 +8,7 @@ class Offset extends Equatable {
   @override
   List<Object?> get props => [x, y];
 
-  const Offset.zero()
-      : x = 0,
-        y = 0;
+  static const Offset zero = Offset(0, 0);
 
   Offset add(Offset other) {
     return Offset(x + other.x, y + other.y);

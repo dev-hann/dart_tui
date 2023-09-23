@@ -3,11 +3,9 @@ import 'package:dart_tui/src/pixel.dart';
 import 'package:dart_tui/src/size.dart';
 import 'package:dart_tui/src/widget/widget.dart';
 
-// ┌─┐
-// │ │
-// └─┘
-// ╭─╮
-// ╰─╯
+const sharpEedgeList = ["┌", "┐", "└", "┘"];
+const roundedEdgeList = ["╭", "╮", "╰", "╯"];
+
 class Card extends Widget {
   Card({
     this.width,
@@ -24,22 +22,23 @@ class Card extends Widget {
     required int width,
     required int height,
   }) {
+    final list = rounded ? roundedEdgeList : sharpEedgeList;
     return [
       Pixel(
         offset: Offset(0, 0),
-        char: "┌",
+        char: list[0],
       ),
       Pixel(
         offset: Offset(width, 0),
-        char: "┐",
+        char: list[1],
       ),
       Pixel(
         offset: Offset(0, height),
-        char: "└",
+        char: list[2],
       ),
       Pixel(
         offset: Offset(width, height),
-        char: "┘",
+        char: list[3],
       ),
     ];
   }

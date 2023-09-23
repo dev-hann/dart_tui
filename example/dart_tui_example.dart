@@ -1,6 +1,7 @@
 import 'package:dart_tui/dart_tui.dart';
 import 'package:dart_tui/src/size.dart';
 import 'package:dart_tui/src/view/view.dart';
+import 'package:dart_tui/src/widget/list_view.dart';
 import 'package:dart_tui/src/widget/widget.dart';
 
 void main() async {
@@ -10,27 +11,17 @@ void main() async {
 }
 
 class MainView extends View {
-  String a = "Hello";
-  @override
-  void initState() {
-    super.initState();
-    Future.delayed(Duration(seconds: 3)).then((value) {
-      a = "Hello World!!";
-      update();
-    });
-  }
-
   @override
   Widget build(Size parentSize) {
     return Card(
+      rounded: true,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(a),
-          Text(a),
-          Text(a),
-          Text(a),
-          Text(a),
+          Text("Hello"),
+          Text("World!"),
+          ListView(
+            children: List.generate(20, (index) => Text("$index")),
+          ),
         ],
       ),
     );
