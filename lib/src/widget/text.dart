@@ -11,12 +11,19 @@ class Text extends Widget {
   List<Pixel> paint(Size parentSize) {
     final List<Pixel> pixelList = [];
     final len = text.length;
+    Offset offset = Offset.zero;
     for (int index = 0; index < len; index++) {
+      String char = text[index];
+      if (char == "\n") {
+        offset = Offset(0, offset.y + 1);
+        continue;
+      }
       final pixel = Pixel(
-        offset: Offset(index, 0),
-        char: text[index],
+        offset: offset,
+        char: char,
       );
       pixelList.add(pixel);
+      offset = offset.add(Offset(1, 0));
     }
     return pixelList;
   }
