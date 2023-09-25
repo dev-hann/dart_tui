@@ -6,21 +6,21 @@ import 'package:dart_tui/src/widget/widget.dart';
 
 void main() async {
   Tui.runApp(
-    () => MainView(),
+    () => Text("Hello"),
   );
 }
 
 class MainView extends View {
   @override
-  Widget build(Size parentSize) {
+  WidgetOld build(Size parentSize) {
     return Card(
       rounded: true,
       child: Column(
         children: [
-          Text("Hello"),
-          Text("World!"),
+          TextOld("Hello"),
+          TextOld("World!"),
           ListView(
-            children: List.generate(20, (index) => Text("$index")),
+            children: List.generate(20, (index) => TextOld("$index")),
           ),
         ],
       ),
