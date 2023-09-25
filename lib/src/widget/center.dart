@@ -3,11 +3,11 @@ import 'package:dart_tui/src/pixel.dart';
 import 'package:dart_tui/src/size.dart';
 import 'package:dart_tui/src/widget/widget.dart';
 
-class Center extends Widget {
+class Center extends WidgetOld {
   Center({
     required this.child,
   });
-  final Widget child;
+  final WidgetOld child;
 
   @override
   List<Pixel> paint(Size parentSize) {

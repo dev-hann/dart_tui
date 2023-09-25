@@ -23,13 +23,13 @@ enum MainAxisAlignment {
 }
 
 // TODO: make [Flex] widget.
-class Column extends Widget {
+class Column extends WidgetOld {
   Column({
     required this.children,
     // this.crossAxisAlignment = CrossAxisAlignment.center,
     this.mainAxisAlignment = MainAxisAlignment.start,
   });
-  final List<Widget> children;
+  final List<WidgetOld> children;
   // final CrossAxisAlignment crossAxisAlignment;
   final MainAxisAlignment mainAxisAlignment;
 

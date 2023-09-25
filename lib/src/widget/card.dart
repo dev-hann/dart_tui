@@ -6,7 +6,7 @@ import 'package:dart_tui/src/widget/widget.dart';
 const sharpEedgeList = ["┌", "┐", "└", "┘"];
 const roundedEdgeList = ["╭", "╮", "╰", "╯"];
 
-class Card extends Widget {
+class Card extends WidgetOld {
   Card({
     this.width,
     this.height,
@@ -15,7 +15,7 @@ class Card extends Widget {
   });
   final int? width;
   final int? height;
-  final Widget child;
+  final WidgetOld child;
   final bool rounded;
 
   List<Pixel> edgeList({

@@ -9,6 +9,7 @@ environment:
 # Add regular dependencies here.
 dependencies:
   equatable:
+  meta:
 
 dev_dependencies:
   lints: ^2.0.0

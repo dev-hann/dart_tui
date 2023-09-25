@@ -1,11 +1,21 @@
 import 'package:dart_tui/src/color.dart';
 import 'package:dart_tui/src/focus_node.dart';
+import 'package:dart_tui/src/frame_work/element.dart';
 import 'package:dart_tui/src/offset.dart';
 import 'package:dart_tui/src/pixel.dart';
 import 'package:dart_tui/src/size.dart';
 
 abstract class Widget {
-  Widget({
+  Element createElement();
+
+  static bool canUpdate(Widget oldWidget, Widget newWidget) {
+    return oldWidget.runtimeType == newWidget.runtimeType;
+    // && oldWidget.key == newWidget.key;
+  }
+}
+
+abstract class WidgetOld {
+  WidgetOld({
     this.focusNode,
   });
   final FocusNode? focusNode;

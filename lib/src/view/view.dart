@@ -3,7 +3,7 @@ import 'package:dart_tui/src/pixel.dart';
 import 'package:dart_tui/src/size.dart';
 import 'package:dart_tui/src/widget/widget.dart';
 
-abstract class View extends Widget {
+abstract class View extends WidgetOld {
   View() {
     initState();
   }
@@ -11,7 +11,7 @@ abstract class View extends Widget {
   void initState() {}
 
   void update() {
-    Tui.update(() => this);
+    // Tui.update(() => this);
   }
 
   @override
@@ -19,5 +19,5 @@ abstract class View extends Widget {
     return build(parentSize).paint(parentSize);
   }
 
-  Widget build(Size parentSize);
+  WidgetOld build(Size parentSize);
 }

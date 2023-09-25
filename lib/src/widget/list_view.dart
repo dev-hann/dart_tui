@@ -8,7 +8,7 @@ enum Axis {
   vertical,
 }
 
-class ListView extends Widget {
+class ListView extends WidgetOld {
   ListView({
     super.focusNode,
     this.scrollDicrection = Axis.vertical,
@@ -17,7 +17,7 @@ class ListView extends Widget {
     required this.children,
   }) : _position = initPosition;
   final ScrollController? controller;
-  final List<Widget> children;
+  final List<WidgetOld> children;
   final Axis scrollDicrection;
 
   int _position = 0;
