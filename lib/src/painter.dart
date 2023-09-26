@@ -2,15 +2,30 @@ import 'dart:io';
 
 import 'package:dart_tui/src/offset.dart';
 import 'package:dart_tui/src/pixel.dart';
+import 'package:dart_tui/src/size.dart';
+import 'package:dart_tui/src/widget/widget.dart';
 
 class Painter {
-  void drawPixel(Pixel pixel) {
-    write(pixel);
+  Painter({
+    required this.parentSize,
+    required this.offset,
+  });
+  final Size parentSize;
+  final Offset offset;
+
+  static Size get windowSize {
+    final height = stdout.terminalLines;
+    final width = stdout.terminalColumns;
+    return Size(width, height);
   }
 
   void writeList(List<Pixel> list) {
     for (final pixel in list) {
-      write(pixel);
+      write(
+        pixel.copyWith(
+          offset: pixel.offset.add(offset),
+        ),
+      );
     }
   }
 

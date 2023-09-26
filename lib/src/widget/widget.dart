@@ -1,31 +1,22 @@
 import 'package:dart_tui/src/color.dart';
-import 'package:dart_tui/src/focus_node.dart';
-import 'package:dart_tui/src/frame_work/element.dart';
 import 'package:dart_tui/src/offset.dart';
+import 'package:dart_tui/src/painter.dart';
 import 'package:dart_tui/src/pixel.dart';
 import 'package:dart_tui/src/size.dart';
+import 'package:meta/meta.dart';
 
 abstract class Widget {
-  Element createElement();
-
-  static bool canUpdate(Widget oldWidget, Widget newWidget) {
-    return oldWidget.runtimeType == newWidget.runtimeType;
-    // && oldWidget.key == newWidget.key;
+  // This Function for compute Size of Widget [layout()]
+  List<Pixel> dryPaint(Size parentSize) {
+    return [];
   }
-}
 
-abstract class WidgetOld {
-  WidgetOld({
-    this.focusNode,
-  });
-  final FocusNode? focusNode;
-
+  // compute Size of Widget through [dryPaint()]
   Size layout(Size parentSize) {
     int minX = 0, maxX = 0;
     int minY = 0, maxY = 0;
-
-    final pixelList = paint(parentSize);
-    for (final pixel in pixelList) {
+    final dryPaintList = dryPaint(parentSize);
+    for (final pixel in dryPaintList) {
       final offset = pixel.offset;
       final x = offset.x;
       final y = offset.y;
@@ -45,7 +36,8 @@ abstract class WidgetOld {
     return Size(maxX - minX + 1, maxY - minY + 1);
   }
 
-  List<Pixel> paint(Size parentSize);
+  @mustCallSuper
+  void paint(Painter painter);
 
   List<Pixel> throwOverflowLayout([String text = ""]) {
     final List<Pixel> pixelList = [];

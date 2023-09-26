@@ -1,4 +1,5 @@
 import 'package:dart_tui/src/offset.dart';
+import 'package:dart_tui/src/painter.dart';
 import 'package:dart_tui/src/pixel.dart';
 import 'package:dart_tui/src/size.dart';
 import 'package:dart_tui/src/widget/widget.dart';
@@ -6,7 +7,7 @@ import 'package:dart_tui/src/widget/widget.dart';
 const sharpEedgeList = ["┌", "┐", "└", "┘"];
 const roundedEdgeList = ["╭", "╮", "╰", "╯"];
 
-class Card extends WidgetOld {
+class Card extends Widget {
   Card({
     this.width,
     this.height,
@@ -15,7 +16,7 @@ class Card extends WidgetOld {
   });
   final int? width;
   final int? height;
-  final WidgetOld child;
+  final Widget child;
   final bool rounded;
 
   List<Pixel> edgeList({
@@ -44,17 +45,16 @@ class Card extends WidgetOld {
   }
 
   @override
-  List<Pixel> paint(Size parentSize) {
+  Size layout(Size parentSize) {
+    return child.layout(parentSize);
+  }
+
+  @override
+  void paint(Painter painter) {
     final List<Pixel> pixelList = [];
-    final width = parentSize.width;
-    final height = parentSize.height;
-    final childPixelList =
-        child.paint(Size(width - 2, height - 2)).map((pixel) {
-      return pixel.copyWith(
-        offset: pixel.offset.add(Offset(2, 1)),
-      );
-    });
-    pixelList.addAll(childPixelList);
+    final childSize = child.layout(painter.parentSize);
+    final width = childSize.width + 1;
+    final height = childSize.height + 1;
     for (int index = 0; index < width; index++) {
       final topLine = Pixel(
         offset: Offset(index, 0),
@@ -81,6 +81,17 @@ class Card extends WidgetOld {
     pixelList.addAll(
       edgeList(width: width, height: height),
     );
-    return pixelList;
+    painter.writeList(pixelList);
+    child.paint(
+      Painter(
+        parentSize: Size(width, height),
+        offset: Offset(1, 1),
+      ),
+    );
+  }
+
+  @override
+  List<Pixel> dryPaint(Size parentSize) {
+    return [];
   }
 }

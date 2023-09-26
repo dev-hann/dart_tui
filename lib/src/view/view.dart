@@ -1,9 +1,8 @@
 import 'package:dart_tui/dart_tui.dart';
-import 'package:dart_tui/src/pixel.dart';
-import 'package:dart_tui/src/size.dart';
+import 'package:dart_tui/src/painter.dart';
 import 'package:dart_tui/src/widget/widget.dart';
 
-abstract class View extends WidgetOld {
+abstract class View extends Widget {
   View() {
     initState();
   }
@@ -11,13 +10,13 @@ abstract class View extends WidgetOld {
   void initState() {}
 
   void update() {
-    // Tui.update(() => this);
+    Tui.update(() => this);
   }
+
+  Widget build();
 
   @override
-  List<Pixel> paint(Size parentSize) {
-    return build(parentSize).paint(parentSize);
+  void paint(Painter painter) {
+    build().paint(painter);
   }
-
-  WidgetOld build(Size parentSize);
 }

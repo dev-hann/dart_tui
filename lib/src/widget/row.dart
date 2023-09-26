@@ -23,9 +23,9 @@ enum MainAxisAlignment {
   // spaceEvenly,
 }
 
-// // TODO: make [Flex] widget.
-class Column extends Widget {
-  Column({
+// TODO: make [Flex] widget.
+class Row extends Widget {
+  Row({
     required this.children,
     // this.crossAxisAlignment = CrossAxisAlignment.center,
     this.mainAxisAlignment = MainAxisAlignment.start,
@@ -33,6 +33,17 @@ class Column extends Widget {
   final List<Widget> children;
   // final CrossAxisAlignment crossAxisAlignment;
   final MainAxisAlignment mainAxisAlignment;
+
+  int _computeChildrenSize(Size parentSize) {
+    int offsetY = 0;
+    final chidrenLength = children.length;
+    for (int index = 0; index < chidrenLength; index++) {
+      final child = children[index];
+      final childSize = child.layout(parentSize);
+      offsetY += childSize.height;
+    }
+    return offsetY;
+  }
 
   @override
   Size layout(Size parentSize) {
@@ -42,10 +53,10 @@ class Column extends Widget {
     for (int index = 0; index < chidrenLength; index++) {
       final child = children[index];
       final childSize = child.layout(parentSize);
-      if (width < childSize.width) {
-        width = childSize.width;
+      if (height < childSize.height) {
+        height = childSize.height;
       }
-      height += childSize.height;
+      width += childSize.width;
     }
     return Size(width, height);
   }
@@ -58,7 +69,7 @@ class Column extends Widget {
     // if (height < children.map((e) => e.layout(parentSize).height).reduce((value, element) => null)) {
     //   return throwOverflowLayout("");
     // }
-    final allocatedSize = layout(parentSize).height;
+    final allocatedSize = _computeChildrenSize(parentSize);
     final int actualSizeDelta = actualSize - allocatedSize;
     // _overflow = math.max(0.0, -actualSizeDelta);
     final int remainingSpace = math.max(0, actualSizeDelta);
@@ -87,18 +98,18 @@ class Column extends Widget {
       //   leadingSpace = betweenSpace;
     }
 
-    int offsetY = leadingSpace;
+    int offsetX = leadingSpace;
     for (int index = 0; index < childCount; index++) {
       final child = children[index];
       child.paint(
         Painter(
           parentSize: parentSize,
           offset: painter.offset.add(
-            Offset(0, offsetY),
+            Offset(offsetX, 0),
           ),
         ),
       );
-      offsetY += child.layout(parentSize).height + betweenSpace;
+      offsetX += child.layout(parentSize).width + betweenSpace;
     }
   }
 
