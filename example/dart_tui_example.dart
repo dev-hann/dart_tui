@@ -25,6 +25,7 @@ class MainView extends View {
     return Card(
       rounded: true,
       child: ListView(
+        initPosition: 1,
         children: List.generate(100, (index) {
           return Text("$index");
         }),

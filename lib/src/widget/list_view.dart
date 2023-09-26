@@ -75,17 +75,20 @@ class ListView extends Widget {
     int offsetY = 0;
     for (int index = 0; index < childCount; index++) {
       final child = children[index];
-      final childOffset = parentOffset.add(Offset(0, offsetY));
-      // if (_position <= childOffset.y &&
-      //     childOffset.y <= _position + parentSize.height) {
+      final childOffset = Offset(0, offsetY);
+      // if (_position > childOffset.y) {
+      //   continue;
+      // }
+      // if (childOffset.y <= _position + parentSize.height) {
+      //   continue;
+      // }
       child.paint(
         Painter(
           parentSize: parentSize,
-          offset: childOffset,
+          offset: parentOffset.add(childOffset),
         ),
       );
       offsetY += child.layout(parentSize).height;
-      // }
     }
     // return pixelList.where((pixel) {
     //   return _position <= pixel.offset.y &&
