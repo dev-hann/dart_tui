@@ -1,5 +1,6 @@
 import 'package:dart_tui/src/offset.dart';
 import 'package:dart_tui/src/painter.dart';
+import 'package:dart_tui/src/parent.dart';
 import 'package:dart_tui/src/pixel.dart';
 import 'package:dart_tui/src/size.dart';
 import 'package:dart_tui/src/widget/widget.dart';
@@ -22,23 +23,24 @@ class Card extends Widget {
   List<Pixel> edgeList({
     required int width,
     required int height,
+    required Offset parentOffset,
   }) {
     final list = rounded ? roundedEdgeList : sharpEedgeList;
     return [
       Pixel(
-        offset: Offset(0, 0),
+        offset: parentOffset + Offset(0, 0),
         char: list[0],
       ),
       Pixel(
-        offset: Offset(width, 0),
+        offset: parentOffset + Offset(width, 0),
         char: list[1],
       ),
       Pixel(
-        offset: Offset(0, height),
+        offset: parentOffset + Offset(0, height),
         char: list[2],
       ),
       Pixel(
-        offset: Offset(width, height),
+        offset: parentOffset + Offset(width, height),
         char: list[3],
       ),
     ];
@@ -50,48 +52,50 @@ class Card extends Widget {
   }
 
   @override
-  void paint(Painter painter) {
+  void paint(Painter painter, Parent parent) {
     final List<Pixel> pixelList = [];
-    final childSize = child.layout(painter.parentSize);
+    final childSize = child.layout(parent.size);
     final width = childSize.width + 1;
     final height = childSize.height + 1;
+    final parentOffset = parent.offset;
     for (int index = 0; index < width; index++) {
       final topLine = Pixel(
-        offset: Offset(index, 0),
+        offset: parentOffset + Offset(index, 0),
         char: "─",
       );
       final bottomLine = Pixel(
-        offset: Offset(index, height),
+        offset: parentOffset + Offset(index, height),
         char: "─",
       );
       pixelList.addAll([topLine, bottomLine]);
     }
     for (int index = 0; index < height; index++) {
       final leftLine = Pixel(
-        offset: Offset(0, index),
+        offset: parentOffset + Offset(0, index),
         char: "│",
       );
       final rigntLine = Pixel(
-        offset: Offset(width, index),
+        offset: parentOffset + Offset(width, index),
         char: "│",
       );
       pixelList.addAll([leftLine, rigntLine]);
     }
 
     pixelList.addAll(
-      edgeList(width: width, height: height),
-    );
-    painter.writeList(pixelList);
-    child.paint(
-      Painter(
-        parentSize: Size(width, height),
-        offset: Offset(1, 1),
+      edgeList(
+        parentOffset: parentOffset,
+        width: width,
+        height: height,
       ),
     );
-  }
 
-  @override
-  List<Pixel> dryPaint(Size parentSize) {
-    return [];
+    painter.writeList(pixelList);
+    child.paint(
+      Painter(),
+      Parent(
+        size: childSize,
+        offset: parentOffset + Offset(1, 1),
+      ),
+    );
   }
 }

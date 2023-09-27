@@ -1,6 +1,8 @@
+import 'dart:math';
+
 import 'package:dart_tui/src/offset.dart';
 import 'package:dart_tui/src/painter.dart';
-import 'package:dart_tui/src/pixel.dart';
+import 'package:dart_tui/src/parent.dart';
 import 'package:dart_tui/src/size.dart';
 import 'package:dart_tui/src/widget/widget.dart';
 import 'dart:math' as math;
@@ -36,23 +38,29 @@ class Column extends Widget {
 
   @override
   Size layout(Size parentSize) {
-    int height = 0;
-    int width = 0;
+    int childrenHeight = 0;
+    int childrenWidth = 0;
     final chidrenLength = children.length;
     for (int index = 0; index < chidrenLength; index++) {
+      if (childrenHeight > parentSize.height) {
+        break;
+      }
       final child = children[index];
       final childSize = child.layout(parentSize);
-      if (width < childSize.width) {
-        width = childSize.width;
+      if (childrenWidth < childSize.width) {
+        childrenWidth = childSize.width;
       }
-      height += childSize.height;
+      childrenHeight += childSize.height;
     }
-    return Size(width, height);
+    final w = min(parentSize.width, childrenWidth);
+    final h = min(parentSize.height, childrenHeight);
+
+    return Size(w, h);
   }
 
   @override
-  void paint(Painter painter) {
-    final parentSize = painter.parentSize;
+  void paint(Painter painter, Parent parent) {
+    final parentSize = parent.size;
     final actualSize = parentSize.height;
     final childCount = children.length;
     // if (height < children.map((e) => e.layout(parentSize).height).reduce((value, element) => null)) {
@@ -91,19 +99,13 @@ class Column extends Widget {
     for (int index = 0; index < childCount; index++) {
       final child = children[index];
       child.paint(
-        Painter(
-          parentSize: parentSize,
-          offset: painter.offset.add(
-            Offset(0, offsetY),
-          ),
+        painter,
+        Parent(
+          size: parentSize,
+          offset: parent.offset + Offset(0, offsetY),
         ),
       );
       offsetY += child.layout(parentSize).height + betweenSpace;
     }
-  }
-
-  @override
-  List<Pixel> dryPaint(Size parentSize) {
-    return [];
   }
 }

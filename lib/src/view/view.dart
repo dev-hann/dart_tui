@@ -1,5 +1,7 @@
 import 'package:dart_tui/dart_tui.dart';
 import 'package:dart_tui/src/painter.dart';
+import 'package:dart_tui/src/parent.dart';
+import 'package:dart_tui/src/size.dart';
 import 'package:dart_tui/src/widget/widget.dart';
 
 abstract class View extends Widget {
@@ -16,7 +18,12 @@ abstract class View extends Widget {
   Widget build();
 
   @override
-  void paint(Painter painter) {
-    build().paint(painter);
+  Size layout(Size parentSize) {
+    return parentSize;
+  }
+
+  @override
+  void paint(Painter painter, Parent parent) {
+    build().paint(painter, parent);
   }
 }

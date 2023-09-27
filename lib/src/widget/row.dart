@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:dart_tui/src/offset.dart';
 import 'package:dart_tui/src/painter.dart';
+import 'package:dart_tui/src/parent.dart';
 import 'package:dart_tui/src/pixel.dart';
 import 'package:dart_tui/src/size.dart';
 import 'package:dart_tui/src/widget/widget.dart';
@@ -47,29 +50,32 @@ class Row extends Widget {
 
   @override
   Size layout(Size parentSize) {
-    int height = 0;
-    int width = 0;
+    int childrenHeight = 0;
+    int childrenWidth = 0;
     final chidrenLength = children.length;
     for (int index = 0; index < chidrenLength; index++) {
       final child = children[index];
       final childSize = child.layout(parentSize);
-      if (height < childSize.height) {
-        height = childSize.height;
+      if (childrenHeight < childSize.height) {
+        childrenHeight = childSize.height;
       }
-      width += childSize.width;
+      childrenWidth += childSize.width;
     }
-    return Size(width, height);
+    final w = min(parentSize.width, childrenWidth);
+    final h = min(parentSize.height, childrenHeight);
+
+    return Size(w, h);
   }
 
   @override
-  void paint(Painter painter) {
-    final parentSize = painter.parentSize;
-    final actualSize = parentSize.height;
+  void paint(Painter painter, Parent parent) {
+    final parentSize = parent.size;
+    final actualSize = parentSize.width;
     final childCount = children.length;
     // if (height < children.map((e) => e.layout(parentSize).height).reduce((value, element) => null)) {
     //   return throwOverflowLayout("");
     // }
-    final allocatedSize = _computeChildrenSize(parentSize);
+    final allocatedSize = layout(parentSize).width;
     final int actualSizeDelta = actualSize - allocatedSize;
     // _overflow = math.max(0.0, -actualSizeDelta);
     final int remainingSpace = math.max(0, actualSizeDelta);
@@ -102,19 +108,13 @@ class Row extends Widget {
     for (int index = 0; index < childCount; index++) {
       final child = children[index];
       child.paint(
-        Painter(
-          parentSize: parentSize,
-          offset: painter.offset.add(
-            Offset(offsetX, 0),
-          ),
+        painter,
+        Parent(
+          size: parentSize,
+          offset: parent.offset + Offset(offsetX, 0),
         ),
       );
       offsetX += child.layout(parentSize).width + betweenSpace;
     }
-  }
-
-  @override
-  List<Pixel> dryPaint(Size parentSize) {
-    return [];
   }
 }

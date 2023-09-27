@@ -1,6 +1,8 @@
+import 'dart:math';
+
 import 'package:dart_tui/src/offset.dart';
 import 'package:dart_tui/src/painter.dart';
-import 'package:dart_tui/src/pixel.dart';
+import 'package:dart_tui/src/parent.dart';
 import 'package:dart_tui/src/size.dart';
 import 'package:dart_tui/src/widget/widget.dart';
 
@@ -9,6 +11,7 @@ enum Axis {
   vertical,
 }
 
+@Deprecated("not yet")
 class ListView extends Widget {
   ListView({
     this.scrollDicrection = Axis.vertical,
@@ -24,86 +27,58 @@ class ListView extends Widget {
 
   // TODO: make [Viewport], handle list view.
   @override
-  // List<Pixel> paint(Size parentSize) {
-  //   final childCount = children.length;
-  //   final List<Pixel> pixelList = [];
-  //   int offsetY = 0;
-  //   for (int index = 0; index < childCount; index++) {
-  //     final child = children[index];
-  //     // final childPixelList = child.paint(parentSize).map((pixel) {
-  //     //   return pixel.copyWith(
-  //     //     offset: pixel.offset.add(
-  //     //       Offset(0, offsetY),
-  //     //     ),
-  //     //   );
-  //     // });
-  //     // pixelList.addAll(childPixelList);
-  //     // offsetY += child.layout(parentSize).height;
-  //   }
-  //   return pixelList.where((pixel) {
-  //     return _position <= pixel.offset.y &&
-  //         pixel.offset.y <= _position + parentSize.height;
-  //   }).map((pixel) {
-  //     return pixel.copyWith(
-  //         offset: pixel.offset.add(
-  //       Offset(0, -_position),
-  //     ));
-  //   }).toList();
-  // }
-
-  @override
   Size layout(Size parentSize) {
-    int height = 0;
-    int width = 0;
+    int childrenHeight = 0;
+    int childrenWidth = 0;
     final chidrenLength = children.length;
     for (int index = 0; index < chidrenLength; index++) {
+      if (childrenHeight >= parentSize.height) {
+        break;
+      }
       final child = children[index];
       final childSize = child.layout(parentSize);
-      if (width < childSize.width) {
-        width = childSize.width;
+      if (childrenWidth < childSize.width) {
+        childrenWidth = childSize.width;
       }
-      height += childSize.height;
+      childrenHeight += childSize.height;
     }
-    return Size(width, height);
+    final w = min(parentSize.width, childrenWidth);
+    final h = min(parentSize.height, childrenHeight);
+
+    return Size(w, h);
   }
 
   @override
-  void paint(Painter painter) {
-    final parentSize = painter.parentSize;
-    final parentOffset = painter.offset;
+  void paint(Painter painter, Parent parent) {
+    final parentSize = parent.size;
+    final parentOffset = parent.offset;
+    final size = layout(parentSize);
     final childCount = children.length;
+
     int offsetY = 0;
     for (int index = 0; index < childCount; index++) {
       final child = children[index];
-      final childOffset = Offset(0, offsetY);
-      // if (_position > childOffset.y) {
-      //   continue;
-      // }
-      // if (childOffset.y <= _position + parentSize.height) {
-      //   continue;
-      // }
+      final childSize = child.layout(size);
+
+      if (offsetY < _position) {
+        offsetY += childSize.height;
+        continue;
+      }
+
+      final childOffset = Offset(0, offsetY - _position);
+      final clipSize = size.height - (offsetY + childSize.height);
+      if (clipSize < 0) {
+        break;
+      }
       child.paint(
-        Painter(
-          parentSize: parentSize,
-          offset: parentOffset.add(childOffset),
+        painter,
+        Parent(
+          size: Size(size.width, clipSize),
+          offset: parentOffset + childOffset,
         ),
       );
-      offsetY += child.layout(parentSize).height;
+      offsetY += childSize.height;
     }
-    // return pixelList.where((pixel) {
-    //   return _position <= pixel.offset.y &&
-    //       pixel.offset.y <= _position + parentSize.height;
-    // }).map((pixel) {
-    //   return pixel.copyWith(
-    //       offset: pixel.offset.add(
-    //     Offset(0, -_position),
-    //   ));
-    // }).toList();
-  }
-
-  @override
-  List<Pixel> dryPaint(Size parentSize) {
-    return [];
   }
 }
 
