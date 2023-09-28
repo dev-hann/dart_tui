@@ -1,9 +1,20 @@
 import 'package:dart_tui/src/offset.dart';
 import 'package:dart_tui/src/painter.dart';
 import 'package:dart_tui/src/parent.dart';
-import 'package:dart_tui/src/pixel.dart';
 import 'package:dart_tui/src/size.dart';
 import 'package:dart_tui/src/widget/widget.dart';
+
+enum Alignment {
+  topLeft,
+  topCenter,
+  topRight,
+  centerLeft,
+  center,
+  centerRight,
+  bottomLeft,
+  bottomCenter,
+  bottomRight,
+}
 
 class Align extends Widget {
   Align({
@@ -66,16 +77,4 @@ class Align extends Widget {
       ),
     );
   }
-}
-
-enum Alignment {
-  topLeft,
-  topCenter,
-  topRight,
-  centerLeft,
-  center,
-  centerRight,
-  bottomLeft,
-  bottomCenter,
-  bottomRight,
 }

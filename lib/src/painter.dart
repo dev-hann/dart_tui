@@ -34,15 +34,15 @@ class Painter {
     stdout.write('\x1b[${offset.y + 1};${offset.x + 1}H');
   }
 
-  static void clearAll() {
+  void clearAll() {
     stdout.write('\x1b[2J');
   }
 
-  static void hideCursor() {
+  void hideCursor() {
     stdout.write('\x1b[?25l');
   }
 
-  static void showCursor() {
+  void showCursor() {
     stdout.write('\x1b[?25h');
   }
 }

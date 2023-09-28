@@ -4,22 +4,11 @@ import 'package:dart_tui/src/pixel.dart';
 import 'package:dart_tui/src/size.dart';
 import 'package:dart_tui/src/widget/widget.dart';
 
-// final _indicator = ["◜ ", " ◝", " ◞", "◟ "];
 typedef IndicatorBuilder = String Function(String progressBar, int value);
 
-IndicatorBuilder _defaultBuilder() {
-  return (String prorgressBar, int value) {
-    return "[$prorgressBar] $value%";
-  };
-}
-
 class ProgressIndicator extends Widget {
-  ProgressIndicator(
-    this.value, {
-    IndicatorBuilder? builder,
-  }) : builder = builder ?? _defaultBuilder();
+  ProgressIndicator(this.value);
   final int value;
-  final IndicatorBuilder builder;
 
   @override
   Size layout(Size parentSize) {
@@ -45,5 +34,32 @@ class ProgressIndicator extends Widget {
         char: progressBar,
       ),
     );
+  }
+}
+
+class CircleIndicator extends Widget {
+  CircleIndicator();
+
+  // final _indicatorList = ["◜ ", " ◝", " ◞", "◟ "];
+  final _indicatorList = ["\\", "|", "/", "-"];
+
+  @override
+  Size layout(Size parentSize) {
+    return Size(1, 1);
+  }
+
+  @override
+  void paint(Painter painter, Parent parent) async {
+    int index = 0;
+    while (true) {
+      final char = _indicatorList[index % _indicatorList.length];
+      painter.write(
+        Pixel(offset: parent.offset, char: char),
+      );
+      index++;
+      await Future.delayed(
+        Duration(milliseconds: 100),
+      );
+    }
   }
 }

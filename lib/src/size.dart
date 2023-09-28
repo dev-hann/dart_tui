@@ -15,4 +15,12 @@ class Size {
   String toString() {
     return "$runtimeType{$width,$height}";
   }
+
+  Size operator -(Size other) {
+    return Size(width - other.width, height - other.height);
+  }
+
+  Size operator +(Size other) {
+    return Size(width + other.width, height + other.height);
+  }
 }

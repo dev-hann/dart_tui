@@ -48,15 +48,15 @@ class Card extends Widget {
 
   @override
   Size layout(Size parentSize) {
-    return child.layout(parentSize);
+    return child.layout(parentSize) + Size(2, 2);
   }
 
   @override
   void paint(Painter painter, Parent parent) {
     final List<Pixel> pixelList = [];
-    final childSize = child.layout(parent.size);
-    final width = childSize.width + 1;
-    final height = childSize.height + 1;
+    final size = layout(parent.size);
+    final width = size.width - 1;
+    final height = size.height - 1;
     final parentOffset = parent.offset;
     for (int index = 0; index < width; index++) {
       final topLine = Pixel(
@@ -80,7 +80,6 @@ class Card extends Widget {
       );
       pixelList.addAll([leftLine, rigntLine]);
     }
-
     pixelList.addAll(
       edgeList(
         parentOffset: parentOffset,
@@ -88,12 +87,11 @@ class Card extends Widget {
         height: height,
       ),
     );
-
     painter.writeList(pixelList);
     child.paint(
-      Painter(),
+      painter,
       Parent(
-        size: childSize,
+        size: size,
         offset: parentOffset + Offset(1, 1),
       ),
     );

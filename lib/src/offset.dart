@@ -16,4 +16,9 @@ class Offset extends Equatable {
   Offset operator -(Offset other) {
     return Offset(x - other.x, y - other.y);
   }
+
+  @override
+  String toString() {
+    return "$runtimeType:{$x,$y}";
+  }
 }

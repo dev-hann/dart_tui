@@ -58,16 +58,16 @@ class Column extends Widget {
     return Size(w, h);
   }
 
+// FIXME: logic
   @override
   void paint(Painter painter, Parent parent) {
     final parentSize = parent.size;
-    final actualSize = parentSize.height;
-    final childCount = children.length;
+    final parentHeight = parentSize.height;
     // if (height < children.map((e) => e.layout(parentSize).height).reduce((value, element) => null)) {
     //   return throwOverflowLayout("");
     // }
-    final allocatedSize = layout(parentSize).height;
-    final int actualSizeDelta = actualSize - allocatedSize;
+    final childrenHeight = layout(parentSize).height;
+    final int actualSizeDelta = parentHeight - childrenHeight;
     // _overflow = math.max(0.0, -actualSizeDelta);
     final int remainingSpace = math.max(0, actualSizeDelta);
     late final int leadingSpace;
@@ -77,12 +77,15 @@ class Column extends Widget {
       case MainAxisAlignment.start:
         leadingSpace = 0;
         betweenSpace = 0;
+        break;
       case MainAxisAlignment.end:
         leadingSpace = remainingSpace;
         betweenSpace = 0;
+        break;
       case MainAxisAlignment.center:
         leadingSpace = (remainingSpace / 2).round();
         betweenSpace = 0;
+        break;
       // case MainAxisAlignment.spaceBetween:
       //   leadingSpace = 0;
       //   betweenSpace = childCount > 1 ? remainingSpace ~/ (childCount - 1) : 0;
@@ -95,6 +98,7 @@ class Column extends Widget {
       //   leadingSpace = betweenSpace;
     }
 
+    final childCount = children.length;
     int offsetY = leadingSpace;
     for (int index = 0; index < childCount; index++) {
       final child = children[index];
