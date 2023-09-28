@@ -58,7 +58,7 @@ class Column extends Widget {
     return Size(w, h);
   }
 
-// FIXME: logic
+  // FIXME: logic
   @override
   void paint(Painter painter, Parent parent) {
     final parentSize = parent.size;
