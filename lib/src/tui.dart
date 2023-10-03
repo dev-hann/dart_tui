@@ -18,18 +18,19 @@ class Tui {
   }
 
   static runApp(
-    ViewBuilder initWidget,
-  ) {
-    stdin.echoMode = false;
-    stdin.lineMode = false;
+    ViewBuilder initWidget, {
+    ViewBuilder? exitViewBuilder,
+  }) {
     _viewPainter = Painter();
     _currentView = initWidget();
-    inputKeyStream.listen((event) {
-      if (event.char == "q") {
-        exitTui();
-        return;
-      }
-    });
+    inputKeyStream.listen(
+      (event) {
+        if (event.char == "q") {
+          exitTui();
+          return;
+        }
+      },
+    );
     resizeWindowStrem.listen(refresh);
     update(() => _currentView);
   }
@@ -40,28 +41,22 @@ class Tui {
 
   static late View _currentView;
 
-  static void update(
-    ViewBuilder viewBuilder,
-  ) {
+  static void update(ViewBuilder viewBuilder) {
     _currentView = viewBuilder();
-    _viewPainter.hideCursor();
-    _viewPainter.clearAll();
+    _viewPainter
+      ..hideCursor()
+      ..clearAll();
     _currentView.paint(
       _viewPainter,
-      Parent(size: windowSize),
+      Parent(size: _viewPainter.windowSize),
     );
   }
 
   static void exitTui() {
-    _viewPainter.clearAll();
-    _viewPainter.showCursor();
+    _viewPainter
+      ..hideCursor()
+      ..clearAll();
     exit(0);
-  }
-
-  static Size get windowSize {
-    final height = stdout.terminalLines;
-    final width = stdout.terminalColumns;
-    return Size(width, height);
   }
 
   static Key readKey() {

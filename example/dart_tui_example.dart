@@ -1,8 +1,4 @@
-import 'dart:async';
-import 'dart:io';
-
 import 'package:dart_tui/dart_tui.dart';
-import 'package:dart_tui/src/painter.dart';
 import 'package:dart_tui/src/view/view.dart';
 import 'package:dart_tui/src/widget/widget.dart';
 
@@ -12,6 +8,15 @@ void main() async {
   Tui.runApp(() => Snake());
 
   // Tui.runApp(() => MainView());
+}
+
+class ExitView extends View {
+  @override
+  Widget build() {
+    return Center(
+      child: Text("Exit?"),
+    );
+  }
 }
 
 class MainView extends View {

@@ -5,7 +5,15 @@ import 'package:dart_tui/src/pixel.dart';
 import 'package:dart_tui/src/size.dart';
 
 class Painter {
-  static Size get windowSize {
+  Painter({
+    bool echoMode = false,
+    bool lineMode = false,
+  }) {
+    this.echoMode(echoMode);
+    this.lineMode(lineMode);
+  }
+
+  Size get windowSize {
     final height = stdout.terminalLines;
     final width = stdout.terminalColumns;
     return Size(width, height);
@@ -44,5 +52,13 @@ class Painter {
 
   void showCursor() {
     stdout.write('\x1b[?25h');
+  }
+
+  void echoMode(bool value) {
+    stdin.echoMode = value;
+  }
+
+  void lineMode(bool value) {
+    stdin.lineMode = value;
   }
 }
