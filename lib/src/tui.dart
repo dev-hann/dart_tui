@@ -1,8 +1,8 @@
 import 'dart:io';
 
+import 'package:dart_tui/src/key.dart';
 import 'package:dart_tui/src/painter.dart';
 import 'package:dart_tui/src/parent.dart';
-import 'package:dart_tui/src/size.dart';
 import 'package:dart_tui/src/view/view.dart';
 
 typedef ViewBuilder = View Function();
@@ -11,11 +11,8 @@ class Tui {
   static late final Painter _viewPainter;
 
   static Stream get resizeWindowStrem => ProcessSignal.sigwinch.watch();
-  static Stream<Key> get inputKeyStream async* {
-    while (true) {
-      yield readKey();
-    }
-  }
+
+  static Stream<Key> get readKeyStream => _tuiKeyStream();
 
   static runApp(
     ViewBuilder initWidget, {
@@ -23,7 +20,7 @@ class Tui {
   }) {
     _viewPainter = Painter();
     _currentView = initWidget();
-    inputKeyStream.listen(
+    readKeyStream.listen(
       (event) {
         if (event.char == "q") {
           exitTui();
@@ -59,7 +56,7 @@ class Tui {
     exit(0);
   }
 
-  static Key readKey() {
+  static Stream<Key> _tuiKeyStream() async* {
     Key key;
     int charCode;
     var codeUnit = 0;
@@ -67,7 +64,6 @@ class Tui {
     while (codeUnit <= 0) {
       codeUnit = stdin.readByteSync();
     }
-
     if (codeUnit >= 0x01 && codeUnit <= 0x1a) {
       // Ctrl+A thru Ctrl+Z are mapped to the 1st-26th entries in the
       // enum, so it's easy to convert them across
@@ -80,7 +76,7 @@ class Tui {
 
       charCode = stdin.readByteSync();
       if (charCode == -1) {
-        return key;
+        yield key;
       }
       escapeSequence.add(String.fromCharCode(charCode));
 
@@ -89,7 +85,7 @@ class Tui {
       } else if (escapeSequence[0] == '[') {
         charCode = stdin.readByteSync();
         if (charCode == -1) {
-          return key;
+          yield key;
         }
         escapeSequence.add(String.fromCharCode(charCode));
 
@@ -117,7 +113,7 @@ class Tui {
                 escapeSequence[1].codeUnits[0] < '9'.codeUnits[0]) {
               charCode = stdin.readByteSync();
               if (charCode == -1) {
-                return key;
+                yield key;
               }
               escapeSequence.add(String.fromCharCode(charCode));
               if (escapeSequence[2] != '~') {
@@ -156,7 +152,7 @@ class Tui {
       } else if (escapeSequence[0] == 'O') {
         charCode = stdin.readByteSync();
         if (charCode == -1) {
-          return key;
+          yield key;
         }
         escapeSequence.add(String.fromCharCode(charCode));
         assert(escapeSequence.length == 2);
@@ -168,16 +164,16 @@ class Tui {
             key.controlChar = ControlCharacter.end;
             break;
           case 'P':
-            key.controlChar = ControlCharacter.F1;
+            key.controlChar = ControlCharacter.f1;
             break;
           case 'Q':
-            key.controlChar = ControlCharacter.F2;
+            key.controlChar = ControlCharacter.f2;
             break;
           case 'R':
-            key.controlChar = ControlCharacter.F3;
+            key.controlChar = ControlCharacter.f3;
             break;
           case 'S':
-            key.controlChar = ControlCharacter.F4;
+            key.controlChar = ControlCharacter.f4;
             break;
           default:
         }
@@ -196,83 +192,5 @@ class Tui {
       // assume other characters are printable
       key = Key.printable(String.fromCharCode(codeUnit));
     }
-    return key;
   }
-}
-
-enum ControlCharacter {
-  none,
-
-  ctrlA,
-  ctrlB,
-  ctrlC, // Break
-  ctrlD, // End of File
-  ctrlE,
-  ctrlF,
-  ctrlG, // Bell
-  ctrlH, // Backspace
-  tab,
-  ctrlJ,
-  ctrlK,
-  ctrlL,
-  enter,
-  ctrlN,
-  ctrlO,
-  ctrlP,
-  ctrlQ,
-  ctrlR,
-  ctrlS,
-  ctrlT,
-  ctrlU,
-  ctrlV,
-  ctrlW,
-  ctrlX,
-  ctrlY,
-  ctrlZ, // Suspend
-
-  arrowLeft,
-  arrowRight,
-  arrowUp,
-  arrowDown,
-  pageUp,
-  pageDown,
-  wordLeft,
-  wordRight,
-
-  home,
-  end,
-  escape,
-  delete,
-  backspace,
-  wordBackspace,
-
-  // ignore: constant_identifier_names
-  F1,
-  // ignore: constant_identifier_names
-  F2,
-  // ignore: constant_identifier_names
-  F3,
-  // ignore: constant_identifier_names
-  F4,
-
-  unknown
-}
-
-/// A representation of a keystroke.
-class Key {
-  bool isControl = false;
-  String char = '';
-  ControlCharacter controlChar = ControlCharacter.unknown;
-
-  Key.printable(this.char) : assert(char.length == 1) {
-    controlChar = ControlCharacter.none;
-  }
-
-  Key.control(this.controlChar) {
-    char = '';
-    isControl = true;
-  }
-
-  @override
-  String toString() => isControl ? controlChar.toString() : char.toString();
 }

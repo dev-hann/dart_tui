@@ -1,7 +1,7 @@
 library;
 
 export './src/focus_node.dart';
-export './src/tui.dart';
+export 'src/tui.dart';
 export './src/widget/card.dart';
 export './src/widget/center.dart';
 export './src/widget/column.dart';
