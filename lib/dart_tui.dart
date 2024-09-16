@@ -12,3 +12,4 @@ export './src/widget/sized_box.dart';
 export './src/widget/text_field.dart';
 export './src/widget/padding.dart';
 export './src/widget/indicator.dart';
+export './src/view/view.dart';
